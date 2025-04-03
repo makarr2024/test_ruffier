@@ -44,41 +44,65 @@ txt_res.append('''
 
 def ruffier_index(P1, P2, P3):
     ''' возвращает значение индекса по трем показателям пульса для сверки с таблицей'''
-    index = (4 * (P1 + P2 + P3) - 200) / 10
-    return index
+    r_index = (4 * (P1 + P2 + P3) - 200) / 10
+    return r_index
 
 def neud_level(age):
     ''' варианты с возрастом меньше 7 и взрослым надо обрабатывать отдельно, 
     здесь подбираем уровень "неуд" только внутри таблицы:
     в возрасте 7 лет "неуд" - это индекс 21, дальше каждые 2 года он понижается на 1.5 до значения 15 в 15-16 лет '''
+    
     number = (min(15, age)-7)//2
-    x = 21 - 1.5*number
-    return x
+    level = 21 - 1.5*number
+    return level
     
 def ruffier_result(r_index, level):
     ''' функция получает индекс Руфье и интерпретирует его, 
     возвращает уровень готовности: число от 0 до 4
     (чем выше уровень готовности, тем лучше).  '''
-    if r_index > level:
+    if r_index >= level:
         return 0
     
     level -= 4
-    if r_index > level:
+    if r_index >= level:
         return 1
     
-    level -= 4
-    if r_index > level:
+    level -= 5
+    if r_index >= level:
         return 2
     
-    level -= 4
-    if r_index > level:
+    level -= 5.5
+    if r_index >= level:
         return 3
     
+    return 4
 
 
 def test(P1, P2, P3, age):
     ''' эту функцию можно использовать снаружи модуля для подсчетов индекса Руфье.
     Возвращает готовые тексты, которые остается нарисовать в нужном месте
     Использует для текстов константы, заданные в начале этого модуля. '''
-    pass
+    if age < 7:
+        test_final = txt_nodata
 
+    r_index = ruffier_index(P1, P2, P3)
+    level = neud_level(age)
+
+    if ruffier_result(r_index, level) == 0:
+        txt_res.append('''низкая. 
+Срочно обратитесь к врачу!''')
+    if ruffier_result(r_index, level) == 1:
+        txt_res.append('''удовлетворительная. 
+Обратитесь к врачу!''')
+    if ruffier_result(r_index, level) == 2:
+        txt_res.append('''средняя. 
+Возможно, стоит дополнительно обследоваться у врача.''')
+    if ruffier_result(r_index, level) == 3:
+        txt_res.append('''
+выше среднего''')
+    if ruffier_result(r_index, level) == 4:
+        txt_res.append('''
+высокая''')
+
+    test_final = txt_index + str(ruffier_index(P1, P2, P3)) + '\n' + txt_workheart + str(txt_res[0])
+    return test_final
