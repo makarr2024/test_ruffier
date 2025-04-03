@@ -4,6 +4,7 @@ from kivy.uix.button import Button
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
+from ruffier import test
 
 class MyButton(Button):
     def __init__(self, screen, direction, goal, **kwargs):
@@ -22,14 +23,6 @@ class MyButton(Button):
 class FirstScr(Screen):
     def __init__(self, name='first',**kwargs):
         super().__init__(name=name,**kwargs)
-
-# pos_hint={'center_x': , 'center_y': }
-# pos_hint = { , }
-# size_hint = ( , )
-
-# orientation = 'horizontal'
-# orientation = 'vertical'
-
 
 # widgets
         ti_text1 = Label(text = 'Введите имя')
@@ -68,7 +61,7 @@ class FirstScr(Screen):
         global name
         global age
         name = self.ti_name.text
-        age = self.ti_age.text
+        age = int(self.ti_age.text)
 
         self.manager.transition.direction = 'left'
         self.manager.current = 'second'
@@ -96,7 +89,7 @@ class SecondScr(Screen):
         
     def next(self):
         global res1
-        res1 = self.ti_res1.text
+        res1 = int(self.ti_res1.text)
         self.manager.transition.direction = 'left'
         self.manager.current = 'third'
 
@@ -156,8 +149,8 @@ class FourthScr(Screen):
     def next(self):
         global res2
         global res3
-        res2 = self.ti_res2.text
-        res3 = self.ti_res3.text
+        res2 = int(self.ti_res2.text)
+        res3 = int(self.ti_res3.text)
         self.manager.transition.direction = 'left'
         self.manager.current = 'fifth'
         print(name, age, res1, res2, res3)
@@ -167,6 +160,16 @@ class FourthScr(Screen):
 class FifthScr(Screen):
     def __init__(self, name='fifth',**kwargs):
         super().__init__(name=name,**kwargs)
+        self.instr = Label(text='')
+        self.on_enter = self.before
+        self.add_widget(self.instr)
+
+    def before(self):
+        global res1
+        global res2
+        global res3
+        global age
+        self.instr.text = test(res1, res2, res3, age)
     
         
 
