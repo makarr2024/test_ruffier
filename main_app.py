@@ -7,9 +7,9 @@ from kivy.uix.textinput import TextInput
 from ruffier import test
 from kivy.core.window import Window
 from seconds import Seconds
-
-
-# .setdisabled(True)
+from kivy.animation import Animation
+from sits import Sits
+from runner import Runner
 
 green_c = (.29, .74, .37, .5)
 Window.clearcolor = green_c
@@ -31,6 +31,8 @@ def check_int(str_number):
     except:
         return False
 
+anim = Animation()
+anim.repeat = True
 
 class FirstScr(Screen):
     def __init__(self, name='first',**kwargs):
@@ -135,22 +137,31 @@ class ThirdScr(Screen):
     def __init__(self, name='third',**kwargs):
         super().__init__(name=name,**kwargs)
         txt_sits = Label(text ='Выполните 30 приседаний за 45 секунд.')
-        btn = Button(text="Продолжить")
-        btn.background_color = green_c
-        btn.on_press = self.next
+        self.btn = Button(text="Начать")
+        self.btn.background_color = green_c
+        self.run = Runner(total=30, steptime=1.5)
+        self.lbl_sec = Sits(30)
+        self.run.bind(finished=self.sits_finished)
+        
 
         layout = BoxLayout(orientation = 'vertical')
         layout1 = BoxLayout(orientation = 'horizontal', pos_hint={'center_x': .5, 'center_y': .3}, size_hint=(.2, .1), padding=8, spacing=8)
         layout.add_widget(txt_sits)
-        layout1.add_widget(btn)
+        layout1.add_widget(self.btn)
         layout.add_widget(layout1)
         
         self.add_widget(layout)
-        
+    
+    def sits_finished(self):
+        self.btn.set_disabled(True)
+        self.run.start()
+
 
     def next(self):
-        self.manager.transition.direction = 'left'
-        self.manager.current = 'fourth'
+        pass
+        # else:
+        #     self.manager.transition.direction = 'left'
+        #     self.manager.current = 'fourth'
 
 class FourthScr(Screen):
     def __init__(self, name='fourth',**kwargs):
@@ -260,6 +271,3 @@ class MyApp(App):
 
 app = MyApp()
 app.run()
-
-
-
